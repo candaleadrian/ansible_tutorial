@@ -1,3 +1,11 @@
+[web_servers]
 vm01 ansible_host=172.25.13.72 ansible_port=2221 ansible_user=root
+vm04 ansible_host=172.25.13.72 ansible_port=2224 ansible_user=adi ansible_python_interpreter=/usr/local/bin/python3.11
+
+[db_servers]
 vm02 ansible_host=172.25.13.72 ansible_port=2222 ansible_user=root
+
+[file_servers]
 vm03 ansible_host=172.25.13.72 ansible_port=2223 ansible_user=root
+
+

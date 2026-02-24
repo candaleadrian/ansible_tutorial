@@ -1,0 +1,45 @@
+---
+
+- hosts: all
+  tasks:
+
+  - name: Install python3-dnf
+    become: true
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+    ansible.builtin.dnf:
+      name: python3-dnf
+      state: present
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (CentOS)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  tasks:
+
+  - name: install apache and php for Ubuntu servers
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install apache and php for Centos servers
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
