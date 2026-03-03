@@ -1,0 +1,50 @@
+---
+
+- hosts: all
+  tasks:
+
+  - name: Install python3-dnf
+    become: true
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+    ansible.builtin.dnf:
+      name: python3-dnf
+      state: present
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (CentOS)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  tasks:
+
+    - name: create simone user
+      tags: always
+      user:
+        name: simone
+        groups: root
+
+    - name: add ssh key for simone
+      tags: always
+      authorized_key:
+        user: simone
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC6Pb+qQV/RZwVYKBxQNkTPQ9OLf+/LFBpuQ4jsBpCGZ ansible"
+
+    - name: add sudoers file for simone
+      tags: always
+      copy:
+        src: sudoer_simone
+        dest: /etc/sudoers.d/simone
+        owner: root
+        group: root
+        mode: 0440
+
